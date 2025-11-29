@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Media;
+
+namespace Shell;
+
+public enum ShellSpecialKind
+{
+    ThisPC,
+    Network,
+    RecycleBin,
+    ControlPanel
+}
+
+public static class ShellSpecialItems
+{
+                public static bool TryResolve(string label, out ShellSpecialKind kind)
+    {
+        switch (label)
+        {
+            case "This PC":
+            case "Computer":
+            case "My Computer":
+                kind = ShellSpecialKind.ThisPC;
+                return true;
+
+            case "Network":
+                kind = ShellSpecialKind.Network;
+                return true;
+
+            case "Recycle Bin":
+            case "Trash":
+                kind = ShellSpecialKind.RecycleBin;
+                return true;
+
+            case "Control Panel":
+                kind = ShellSpecialKind.ControlPanel;
+                return true;
+
+            default:
+                kind = default;
+                return false;
+        }
+    }
+
+    public static ImageSource? GetIcon(ShellSpecialKind kind, bool small = false)
+    {
+        switch (kind)
+        {
+            case ShellSpecialKind.ThisPC:
+                return ShellIcon.GetSpecialFolderIcon(ShellIcon.CSIDL_DRIVES, small);
+            case ShellSpecialKind.Network:
+                return ShellIcon.GetSpecialFolderIcon(ShellIcon.CSIDL_NETWORK, small);
+            case ShellSpecialKind.RecycleBin:
+                return ShellIcon.GetSpecialFolderIcon(ShellIcon.CSIDL_BITBUCKET, small);
+            case ShellSpecialKind.ControlPanel:
+                return ShellIcon.GetSpecialFolderIcon(ShellIcon.CSIDL_CONTROLS, small);
+            default:
+                return null;
+        }
+    }
+
+        public static string GetExplorerArgument(ShellSpecialKind kind)
+    {
+        switch (kind)
+        {
+            case ShellSpecialKind.ThisPC:
+                return "shell:MyComputerFolder";
+            case ShellSpecialKind.Network:
+                return "shell:NetworkPlacesFolder";
+            case ShellSpecialKind.RecycleBin:
+                return "shell:RecycleBinFolder";
+            case ShellSpecialKind.ControlPanel:
+                return "shell:ControlPanelFolder";
+            default:
+                return string.Empty;
+        }
+    }
+}
